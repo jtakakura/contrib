@@ -1,0 +1,9 @@
+# Rust build artifacts
+target/
+
+# Wash build artifacts
+build/
+*.par.gz
+
+# libsql database files
+data/

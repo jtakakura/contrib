@@ -1,0 +1,37 @@
+package wasmcloud:libsql@0.1.0-draft;
+
+/// Types used by components and providers of a SQLDB libSQL interface
+interface types {
+
+  /// Errors that occur while executing queries
+  variant query-error {
+    /// A completely unexpected error, specific to executing queries
+    unexpected(string),
+  }
+
+  /// libSQL data values, usable as parameters or via queries
+  /// see: https://www.sqlite.org/datatype3.html
+  ///
+  variant libsql-value {
+    null,
+
+    // Numeric
+    integer(s64),
+    real(f64),
+
+    // String
+    text(string),
+
+    // Binary
+    blob(list<u8>),
+  }
+
+  record result-row-entry {
+    /// Name of the result column
+    column-name: string,
+    /// Value of the result column
+    value: libsql-value,
+  }
+
+  type result-row = list<result-row-entry>;
+}

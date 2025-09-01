@@ -1,0 +1,35 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: rust-sqldb-libsql-query
+  annotations:
+    version: v0.1.0
+    description: |
+      Demo WebAssembly component using the wasmCloud SQLDB libSQL provider via the wasmcloud:libsql WIT interface
+spec:
+  components:
+    - name: querier
+      type: component
+      properties:
+        image: file://./component/build/sqldb_postgres_query.wasm
+      traits:
+        - type: spreadscaler
+          properties:
+            instances: 1
+        # Link the component to the provider on wasmcloud:example/system-info
+        - type: link
+          properties:
+            target:
+              name: sqldb-libsql
+              config:
+                - name: default-libsql
+            namespace: wasmcloud
+            package: libsql
+            interfaces: [query, execute]
+
+    - name: sqldb-libsql
+      type: capability
+      properties:
+        image: file://./build/sqldb-libsql-provider.par.gz
+        config:
+          - name: default-libsql

@@ -1,0 +1,7 @@
+package wasmcloud:libsql@0.1.0-draft;
+
+world provider-sqldb-libsql {
+    export execute;
+    export query;
+    export types;
+}

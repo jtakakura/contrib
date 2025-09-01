@@ -1,0 +1,43 @@
+package wasmcloud:libsql@0.1.0-draft;
+
+/// Interface for executing queries against a libSQL database
+interface execute {
+  use types.{libsql-value, result-row, query-error};
+
+  /// Execute a query that does not return rows, such as an `INSERT`, `UPDATE`, or `DELETE`
+  ///
+  /// Queries *must* be parameterized, with named arguments in the form of `?<integer>`, for example:
+  ///
+  /// ```
+  /// INSERT INTO users (email, username) VALUES (?1, ?2);
+  /// ```
+  execute: func(query: string, params: list<libsql-value>) -> result<u64, query-error>;
+
+  /// Execute a batch set of statements
+  ///
+  execute-batch: func(query: string) -> result<list<result-row>, query-error>;
+
+  /// Execute a batch set of statements atomically in a transaction
+  ///
+  execute-transactional-batch: func(query: string) -> result<list<result-row>, query-error>;
+
+  /// Get the last inserted row ID, if the last query was an `INSERT`
+  ///
+  last-insert-rowid: func() -> result<s64, query-error>;
+}
+
+/// Interface for querying a libSQL database
+interface query {
+  use types.{libsql-value, result-row, query-error};
+
+  /// Query a libSQL database, leaving connection/session management
+  /// to the callee/implementer of this interface (normally a provider configured with connection credentials)
+  ///
+  /// Queries *must* be parameterized, with named arguments in the form of `?<integer>`, for example:
+  ///
+  /// ```
+  /// SELECT email,username FROM users WHERE id=?1;
+  /// ```
+  ///
+  query: func(query: string, params: list<libsql-value>) -> result<list<result-row>, query-error>;
+}
